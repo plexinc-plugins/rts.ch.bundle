@@ -14,7 +14,7 @@ http = 'http:'
 # Set up containers for all possible objects
 def Start():
 
-  ObjectContainer.title1 = TITLE
+  ObjectContainer.title1 = TITLE.decode()
   ObjectContainer.art = R(ART)
 
   DirectoryObject.thumb = R(ICON)
@@ -38,7 +38,7 @@ def Start():
 
 def MainMenu():
 
-  oc = ProduceRss(title="Emissions")
+  oc = ProduceRss(title="Émissions")
 
   return oc
 ###################################################################################################
@@ -48,7 +48,7 @@ def ProduceRss(title):
   json_data = Resource.Load(SHOW_DATA)
   Dict["shows"] = JSON.ObjectFromString(json_data)
 
-  oc = ObjectContainer(title2=title)
+  oc = ObjectContainer(title2=title.decode())
   i=1
   shows = Dict["MyShows"]
   for show in shows:
@@ -89,7 +89,7 @@ def ProduceRss(title):
 def ShowRSS(title, url, thumb):
 
 # The ProduceRSS try above tells us if the RSS feed is the correct format. so we do not need to put this function's data pull in a try/except
-  oc = ObjectContainer(title2=title)
+  oc = ObjectContainer(title2=title.decode())
   feed_title = title
   xml = XML.ElementFromURL(url)
   for item in xml.xpath('//item'):
