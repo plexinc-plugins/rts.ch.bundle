@@ -184,7 +184,7 @@ def ShowRSS(title, url, thumb):
       continue
     
     else: 
-    # Collect all other optionnal data for item
+    # Collect all other optional data for item
       try:
         date = item.xpath('./pubDate//text()')[0]
       except:
@@ -196,6 +196,7 @@ def ShowRSS(title, url, thumb):
       try:
         # The description actually contains pubdate, link with thumb and description so we need to break it up
         epDesc = item.xpath('./description//text()')[0]
+        epDesc = epDesc.replace('.image?w=80&amp;h=57', '.image?w=320&amp;h=228')
         (summary, new_thumb) = SummaryFind(epDesc)
         if new_thumb:
           item_thumb = new_thumb
