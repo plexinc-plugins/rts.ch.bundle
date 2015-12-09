@@ -19,8 +19,8 @@ def Start():
 
   DirectoryObject.thumb = R(ICON)
   VideoClipObject.thumb = R(ICON)
-  
-  HTTP.CacheTime = CACHE_1HOUR 
+
+  HTTP.CacheTime = CACHE_1HOUR
 
   #This Checks to see if there is a list of feeds
   if Dict['MyShows'] == None:
@@ -46,13 +46,11 @@ def MainMenu():
 @route(PREFIX + '/producerss')
 def ProduceRss(title):
   oc = ObjectContainer(title2=title.decode())
-  i=1
   shows = Dict["MyShows"]
   for show in shows:
-    if show[i]['url'] != '':
-      url = show[i]["url"]
-      thumb = show[i]["thumb"]
-      i+=1
+    if show['url'] != '':
+      url = show["url"]
+      thumb = show["thumb"]
       try:
         rss_page = XML.ElementFromURL(url)
         title = rss_page.xpath("//channel/title//text()")[0]
@@ -69,8 +67,6 @@ def ProduceRss(title):
         oc.add(DirectoryObject(key=Callback(ShowRSS, title=title, url=url, thumb=thumb), title=title, summary=description, thumb=thumb))
       except:
         oc.add(DirectoryObject(key=Callback(URLError, url=url), title="Invalid or Incompatible URL", thumb=R('no-feed.png'), summary="The URL was either entered incorrectly or is incompatible with this channel."))
-    else:
-      i+=1
 
   oc.objects.sort(key = lambda obj: obj.title)
 
@@ -90,10 +86,10 @@ def ShowRSS(title, url, thumb):
   feed_title = title
   xml = XML.ElementFromURL(url)
   for item in xml.xpath('//item'):
-  
+
     # All Items must have a title
     title = item.xpath('./title//text()')[0]
-    
+
     # Try to pull the link for the item
     try:
       link = item.xpath('./link//text()')[0]
@@ -119,7 +115,7 @@ def ShowRSS(title, url, thumb):
     # If archive.org is sent to URL service, adding #video to the end of the link makes it load faster
     if link and 'archive.org' in link:
       url_test = 'false'
-      
+
     # Try to pull media url for item
     if url_test == 'false':
     # We try to pull the enclosure or the highest bitrate media:content. If no bitrate, the first one is taken.
@@ -173,7 +169,7 @@ def ShowRSS(title, url, thumb):
         Log("Found theplatform.com link, but couldn't resolve stream: " + str(e))
         media_url = None
 
-    
+
     # If there in not a url service or media_url produced No URL service object and go to next entry
     if url_test == 'false' and not media_url:
       Log('The url test failed and returned a value of %s' %url_test)
@@ -212,10 +208,10 @@ def ShowRSS(title, url, thumb):
           date = Datetime.ParseDate(date)
         # Changed to reflect webisodes version should only apply if a video in added to the audio section by mistake
         oc.add(VideoClipObject(
-          url = link, 
-          title = title, 
-          summary = summary, 
-          thumb = Resource.ContentsOfURLWithFallback(thumb, fallback=ICON), 
+          url = link,
+          title = title,
+          summary = summary,
+          thumb = Resource.ContentsOfURLWithFallback(thumb, fallback=ICON),
           originally_available_at = date
         ))
         oc.objects.sort(key = lambda obj: obj.originally_available_at, reverse=True)
@@ -225,7 +221,7 @@ def ShowRSS(title, url, thumb):
 
   if len(oc) < 1:
     Log ('still no value for objects')
-    return ObjectContainer(header="Empty", message="There are no videos to display for this RSS feed right now.")      
+    return ObjectContainer(header="Empty", message="There are no videos to display for this RSS feed right now.")
   else:
     return oc
 
@@ -242,8 +238,7 @@ def CreateObject(url, media_type, title, originally_available_at, thumb, summary
   except:
     date = None
     pass
-  originally_available_at = date
-  
+
   if local_url.endswith('.mp3'):
     container = 'mp3'
     audio_codec = AudioCodec.MP3
@@ -266,14 +261,14 @@ def CreateObject(url, media_type, title, originally_available_at, thumb, summary
     Log('This media type is not supported')
     new_object = DirectoryObject(key=Callback(URLUnsupported, url=url, title=title), title="Media Type Not Supported", thumb=R('no-feed.png'), summary='The file %s is not a type currently supported by this channel' %url)
     return new_object
-    
+
   new_object = object_type(
     key = Callback(CreateObject, url=url, media_type=media_type, title=title, summary=summary, originally_available_at=originally_available_at, thumb=thumb, include_container=True),
     rating_key = url,
     title = title,
     summary = summary,
     thumb = Resource.ContentsOfURLWithFallback(thumb, fallback=ICON),
-    originally_available_at = originally_available_at,
+    originally_available_at = date,
     items = [
       MediaObject(
         parts = [
@@ -306,7 +301,7 @@ def CheckPlaylist(url):
 # The description actually contains pubdate, link with thumb and description so we need to break it up
 @route(PREFIX + '/summaryfind')
 def SummaryFind(epDesc):
-  
+
   html = HTML.ElementFromString(epDesc)
   description = html.xpath('//p//text()')
   summary = ' '.join(description)
@@ -319,7 +314,7 @@ def SummaryFind(epDesc):
   return (summary, item_thumb)
 
 ############################################################################################################################
-# This is to test if there is a Plex URL service for  given url.  
+# This is to test if there is a Plex URL service for given url.
 #       if URLTest(url) == "true":
 @route(PREFIX + '/urltest')
 def URLTest(url):
@@ -340,14 +335,14 @@ def URLNoService(title):
 @route(PREFIX + '/urlunsupported')
 def URLUnsupported(url, title):
   oc = ObjectContainer()
-  
+
   return ObjectContainer(header="Error", message='The media for the %s feed entry is of a type that is not supported' %title)
 
   return oc
 
 ############################################################################################################################
 # This function creates a directory for incorrectly entered urls and keeps a section of feeds from giving an error if one url is incorrectly entered
-# Would like to allow for reentry of a bad url but for now, just allows for deletion. 
+# Would like to allow for reentry of a bad url but for now, just allows for deletion.
 @route(PREFIX + '/urlerror')
 def URLError(url):
 
