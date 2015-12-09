@@ -45,9 +45,6 @@ def MainMenu():
 # This Menu produces a list of feeds for each type of feed.
 @route(PREFIX + '/producerss')
 def ProduceRss(title):
-  json_data = Resource.Load(SHOW_DATA)
-  Dict["shows"] = JSON.ObjectFromString(json_data)
-
   oc = ObjectContainer(title2=title.decode())
   i=1
   shows = Dict["MyShows"]
@@ -241,9 +238,12 @@ def CreateObject(url, media_type, title, originally_available_at, thumb, summary
   audio_codec = AudioCodec.AAC
   # Since we want to make the date optional, we need to handle the Datetime.ParseDate() as a try in case it is already done or blank
   try:
-    originally_available_at = Datetime.ParseDate(originally_available_at)
+    date = Datetime.ParseDate(originally_available_at)
   except:
+    date = None
     pass
+  originally_available_at = date
+  
   if local_url.endswith('.mp3'):
     container = 'mp3'
     audio_codec = AudioCodec.MP3
