@@ -1,4 +1,4 @@
-TITLE    = 'Radio Télévision Suisse'
+TITLE    = 'Radio Television Suisse'
 PREFIX   = '/video/rts.ch'
 ART      = 'art-default.jpg'
 ICON     = 'icon-default.jpg'
