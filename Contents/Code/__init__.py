@@ -7,8 +7,6 @@ NAMESPACES = {'feedburner': 'http://rssnamespace.org/feedburner/ext/1.0'}
 NAMESPACES2 = {'media': 'http://search.yahoo.com/mrss/'}
 NAMESPACE_SMIL = {'smil': 'http://www.w3.org/2005/SMIL21/Language'}
 
-http = 'http:'
-
 ###################################################################################################
 # Set up containers for all possible objects
 def Start():
