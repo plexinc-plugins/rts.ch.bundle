@@ -1,8 +1,7 @@
-
 TITLE    = 'Radio Télévision Suisse'
 PREFIX   = '/video/rts.ch'
 ART      = 'art-default.jpg'
-ICON     = 'icon-default.png'
+ICON     = 'icon-default.jpg'
 SHOW_DATA = 'rssdata.json'
 NAMESPACES = {'feedburner': 'http://rssnamespace.org/feedburner/ext/1.0'}
 NAMESPACES2 = {'media': 'http://search.yahoo.com/mrss/'}
@@ -66,7 +65,7 @@ def ProduceRss(title):
             thumb = R(ICON)
         oc.add(DirectoryObject(key=Callback(ShowRSS, title=title, url=url, thumb=thumb), title=title, summary=description, thumb=thumb))
       except:
-        oc.add(DirectoryObject(key=Callback(URLError, url=url), title="Invalid or Incompatible URL", thumb=R('no-feed.png'), summary="The URL was either entered incorrectly or is incompatible with this channel."))
+        oc.add(DirectoryObject(key=Callback(URLError, url=url), title="Invalid or Incompatible URL", thumb=R('no-feed.jpg'), summary="The URL was either entered incorrectly or is incompatible with this channel."))
 
   oc.objects.sort(key = lambda obj: obj.title)
 
@@ -173,7 +172,7 @@ def ShowRSS(title, url, thumb):
     # If there in not a url service or media_url produced No URL service object and go to next entry
     if url_test == 'false' and not media_url:
       Log('The url test failed and returned a value of %s' %url_test)
-      oc.add(DirectoryObject(key=Callback(URLNoService, title=title),title="No URL Service or Media Files for Video", thumb=R('no-feed.png'), summary='There is not a Plex URL service or link to media files for %s.' %title))
+      oc.add(DirectoryObject(key=Callback(URLNoService, title=title),title="No URL Service or Media Files for Video", thumb=R('no-feed.jpg'), summary='There is not a Plex URL service or link to media files for %s.' %title))
       continue
     
     else: 
@@ -259,7 +258,7 @@ def CreateObject(url, media_type, title, originally_available_at, thumb, summary
     object_type = VideoClipObject
   else:
     Log('This media type is not supported')
-    new_object = DirectoryObject(key=Callback(URLUnsupported, url=url, title=title), title="Media Type Not Supported", thumb=R('no-feed.png'), summary='The file %s is not a type currently supported by this channel' %url)
+    new_object = DirectoryObject(key=Callback(URLUnsupported, url=url, title=title), title="Media Type Not Supported", thumb=R('no-feed.jpg'), summary='The file %s is not a type currently supported by this channel' %url)
     return new_object
 
   new_object = object_type(
